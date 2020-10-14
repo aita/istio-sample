@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta7
+kind: Config
+metadata:
+  name: istio-sample
+build:
+  artifacts:
+  - image: hello
+    context: hello
+deploy:
+  kubectl:
+    manifests:
+    - manifests.yaml

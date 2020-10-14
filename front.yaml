@@ -1,60 +1,55 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: hello
+  name: front
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello
+  name: front
   labels:
-    app: hello
+    app: front
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello
+      app: front
   template:
     metadata:
       labels:
-        app: hello
+        app: front
     spec:
-      serviceAccountName: hello
+      serviceAccountName: front
       containers:
-        - name: hello
-          image: hello
+        - name: front
+          image: front
           ports:
-            - containerPort: 80
+            - containerPort: 8000
           command:
             - "uvicorn"
-            - "--host"
-            - "0.0.0.0"
-            - "--port"
-            - "80"
             - "app:app"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello
+  name: front
   labels:
-    app: hello
-    service: httpbin
+    app: front
+    service: front
 spec:
   selector:
-    app: hello
+    app: front
   ports:
     - port: 8000
       name: http
-      targetPort: 80
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: hello-gateway
+  name: front-gateway
 spec:
-  selector:
-    istio: ingressgateway # use istio default controller
+  # selector:
+  #   istio: ingressgateway # use istio default controller
   servers:
     - port:
         number: 80
@@ -66,15 +61,15 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: hello
+  name: front
 spec:
   hosts:
     - "*"
   gateways:
-    - hello-gateway
+    - front-gateway
   http:
     - route:
         - destination:
-            host: hello
+            host: front
             port:
               number: 8000

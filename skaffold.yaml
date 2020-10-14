@@ -4,9 +4,12 @@ metadata:
   name: istio-sample
 build:
   artifacts:
-  - image: hello
-    context: hello
+    - image: front
+      context: front
+    - image: hello
+      context: hello
 deploy:
   kubectl:
     manifests:
-    - manifests.yaml
+      - front.yaml
+      - hello.yaml

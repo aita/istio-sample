@@ -17,4 +17,4 @@ RUN poetry config virtualenvs.create false \
 
 COPY . .
 
-CMD [ "uvicorn", "app:app" ]
+CMD [ "python", "app.py" ]

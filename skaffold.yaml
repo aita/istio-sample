@@ -8,8 +8,11 @@ build:
       context: front
     - image: hello
       context: hello
+    - image: greeter
+      context: greeter
 deploy:
   kubectl:
     manifests:
       - front.yaml
       - hello.yaml
+      - greeter.yaml

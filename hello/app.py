@@ -1,10 +1,15 @@
+import random
 from starlette.applications import Starlette
 from starlette.responses import JSONResponse
 from starlette.routing import Route
 
 
-async def hello(request):
-    return JSONResponse({"message": "hello world"})
+NAMES = ["Oliver", "Charlotte", "Theodore"]
 
 
-app = Starlette(routes=[Route("/", hello)])
+async def index(request):
+    name = random.choice(NAMES)
+    return JSONResponse({"name": name})
+
+
+app = Starlette(routes=[Route("/", index)])

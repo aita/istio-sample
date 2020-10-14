@@ -1,14 +1,11 @@
 [tool.poetry]
-name = "front"
+name = "hello"
 version = "0.1.0"
 description = ""
 authors = ["aita <792803+aita@users.noreply.github.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-starlette = "^0.13.8"
-uvicorn = "^0.12.1"
-aiohttp = "^3.6.3"
 grpcio = "^1.32.0"
 grpcio-tools = "^1.32.0"
 

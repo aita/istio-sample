@@ -1,58 +1,55 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: hello
+  name: greeter
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello
+  name: greeter
   labels:
-    app: hello
+    app: greeter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: hello
+      app: greeter
   template:
     metadata:
       labels:
-        app: hello
+        app: greeter
     spec:
-      serviceAccountName: hello
+      serviceAccountName: greeter
       containers:
-        - name: hello
-          image: hello
+        - name: greeter
+          image: greeter
           ports:
-            - containerPort: 8000
-          command:
-            - "uvicorn"
-            - "app:app"
+            - containerPort: 50051
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello
+  name: greeter
   labels:
-    app: hello
-    service: hello
+    app: greeter
+    service: greeter
 spec:
   selector:
-    app: hello
+    app: greeter
   ports:
-    - port: 8000
-      name: http
+    - port: 50051
+      name: grpc
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: hello
+  name: greeter
 spec:
   hosts:
-    - hello
+    - greeter
   http:
     - route:
         - destination:
-            host: hello
+            host: greeter
             port:
-              number: 8000
+              number: 50051

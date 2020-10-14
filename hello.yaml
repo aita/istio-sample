@@ -6,18 +6,50 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello
+  name: hello-v1
   labels:
     app: hello
+    version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: hello
+      version: v1
   template:
     metadata:
       labels:
         app: hello
+        version: v1
+    spec:
+      serviceAccountName: hello
+      containers:
+        - name: hello
+          image: hello
+          ports:
+            - containerPort: 8000
+          command:
+            - "uvicorn"
+            - "app:app"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-v2
+  labels:
+    app: hello
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: hello
+        version: v2
     spec:
       serviceAccountName: hello
       containers:
@@ -54,5 +86,30 @@ spec:
     - route:
         - destination:
             host: hello
+            subset: v1
             port:
               number: 8000
+          weight: 50
+        - destination:
+            host: hello
+            subset: v2
+            port:
+              number: 8000
+          weight: 50
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: hello
+spec:
+  host: hello
+  trafficPolicy:
+    loadBalancer:
+      simple: RANDOM
+  subsets:
+    - name: v1
+      labels:
+        version: v1
+    - name: v2
+      labels:
+        version: v2
